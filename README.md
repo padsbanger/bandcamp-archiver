@@ -8,14 +8,14 @@ Clone this repo, in root directory run:
 
 ```bash
 
-cargo run -- --url album_url --destination ./downloads
+bandcamp-archiver --url album_url --destination ./downloads
 
 ```
 
 Example:
 
 ```bash
-cargo run -- --url https://padsbanger.bandcamp.com/album/eleventh-dimension --destination ./downloads
+bandcamp-archiver -- --url https://padsbanger.bandcamp.com/album/eleventh-dimension --destination ./downloads
 
 ```
 Destination is optional, defaults to current working directory.
