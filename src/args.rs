@@ -11,6 +11,13 @@ pub struct Args {
         help = "The URL of album you want to scrape"
     )]
     url: String,
+        #[arg(
+        short = 'd',
+        long,
+        value_name = "DESTINATION",
+        help = "Location where album will be downloaded",
+    )]
+    destination: Option<String>,
 }
 
 impl Args {

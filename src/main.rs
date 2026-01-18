@@ -1,10 +1,12 @@
 mod args;
 mod scrapper;
 mod album;
+mod downloader;
 
 use album::Album;
 
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
     let url = args::Args::parse_args().url().to_string();
 
     let scraper = scrapper::Scrapper::new(&url);
@@ -12,15 +14,19 @@ fn main() -> anyhow::Result<()> {
 
     match scraper.fetch_html() {
         Ok(data) => {
-            let data: Album = serde_json::from_str(&data)?;
-            println!("Fetched album data successfully:{} - {}", data.current.title, data.artist);
-            println!("Will now attempt to download {} tracks into default directory", data.trackinfo.len());
-            
+            let  data: Album = serde_json::from_str(&data)?;
+                println!(
+                    "Will now attempt to download {} tracks into default directory",
+                    &data.trackinfo.len()
+                );
+            downloader::create_and_download_album(data).await?;
         }
         Err(e) => {
             return Err(anyhow::anyhow!("Error, no album info found."));
         }
     }
+
+
 
 
 

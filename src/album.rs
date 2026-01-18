@@ -9,6 +9,7 @@ pub struct Album {
     pub artist: String,
     pub item_type: String,   // "album", "track", etc.
     pub id: i64,
+    pub art_id: i64,
     pub album_release_date: String,
     pub trackinfo: Vec<TrackInfo>,
     pub url: String,
