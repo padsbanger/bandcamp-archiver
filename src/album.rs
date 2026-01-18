@@ -2,6 +2,27 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Discography {
+    #[serde(rename = "art_id")]
+    pub art_id: u64,
+
+    pub artist: String,
+
+    #[serde(rename = "band_id")]
+    pub band_id: u64,
+
+    pub id: u64,
+
+    #[serde(rename = "page_url")]
+    pub page_url: String,
+
+    pub title: String,
+
+    #[serde(rename = "type")]
+    pub release_type: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Album {
 #[serde(rename = "for the curious")]
     pub for_the_curious: Option<String>,
