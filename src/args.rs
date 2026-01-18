@@ -27,4 +27,7 @@ impl Args {
     pub fn url(&self) -> &str {
         &self.url
     }
+    pub fn destination(&self) -> &str {
+        &self.destination.as_deref().unwrap_or("./downloads")
+    }
 }

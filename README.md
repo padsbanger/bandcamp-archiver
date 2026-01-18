@@ -6,20 +6,23 @@ Cli tool to archive Bandcamp albums
 
 ```bash
 
-cargo run -- --url album_url
+cargo run -- --url album_url --destination ./downloads
 
 ```
 
+Destination is optional, defaults to current working directory.
+
+
 ## TODO
 
-- Create scapper struct
-- Create album struct
-- Create song struct
-- Download whole album into a directory
+- ~~Create scapper struct~~
+- ~~Create album struct~~
+- ~~Create song struct~~
+- ~~Get Bandcamp schema and deserialize response into structs~~
+- ~~Download whole album into a directory~~
+- ~~Add destination folder option~~
 
-
-Nice to have:
+#### Nice to have:
 - Download using threads
-- Get metadata from file if not present in scapped response
 - Download whole artist discography
-- Implement some kind of CLI UI Interface with progress bars
+- ~~Implement some kind of CLI UI Interface with progress bars~~
