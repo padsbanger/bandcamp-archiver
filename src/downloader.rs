@@ -9,7 +9,7 @@ use tokio::io::AsyncWriteExt;
 use tokio::sync::Semaphore;
 use tokio::task::JoinSet;
 
-use super::album::Album;  // your Album struct
+use super::album::Album;
 
 pub async fn create_and_download_album(
     album: Album,
@@ -42,11 +42,17 @@ pub async fn create_and_download_album(
     );
 
     let mp = MultiProgress::new();
-    let sty = ProgressStyle::default_bar()
+
+    // Base style for when we have length
+    let bar_style = ProgressStyle::default_bar()
         .template("{msg}\n{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})")?
         .progress_chars("█▉▊▋▌▍▎▏  ");
 
-    // Usually optimal range: 4–8 concurrent downloads
+    // Spinner style for when length is unknown
+let spinner_style = ProgressStyle::default_spinner()
+    .template("{spinner:.green} {msg} • {bytes} downloaded")
+    .expect("Invalid template");
+
     let max_concurrent = 6;
     let semaphore = Arc::new(Semaphore::new(max_concurrent));
 
@@ -63,21 +69,35 @@ pub async fn create_and_download_album(
         let track_path = full_path.join(&filename);
 
         let pb = mp.add(ProgressBar::new(0));
-        pb.set_style(sty.clone());
-        pb.set_message(format!("{:02} - {}", track.track_num, track.title));
 
         let client = Arc::clone(&client);
         let semaphore = Arc::clone(&semaphore);
+        let bar_style = bar_style.clone();
+        let spinner_style = spinner_style.clone();
 
         tasks.spawn(async move {
             let _permit = semaphore.acquire().await.context("Semaphore acquire failed")?;
 
             // Try to get content length
-            let total = match client.head(&url).send().await {
-                Ok(head) => head.content_length().unwrap_or(0),
-                Err(_) => 0,
-            };
-            pb.set_length(total);
+            let total = client
+                .head(&url)
+                .send()
+                .await
+                .ok()
+                .and_then(|head| head.content_length())
+                .unwrap_or(0);
+
+            let is_known_length = total > 0;
+
+            if is_known_length {
+                pb.set_length(total);
+                pb.set_style(bar_style.clone());
+                pb.set_message(format!("{:02} - {}", track.track_num, track.title));
+            } else {
+                pb.set_style(spinner_style.clone());
+                pb.enable_steady_tick(Duration::from_millis(120));
+                pb.set_message(format!("{:02} - {} (streaming)", track.track_num, track.title));
+            }
 
             let mut resp = client
                 .get(&url)
@@ -114,7 +134,7 @@ pub async fn create_and_download_album(
 
     mp.clear()?;
 
-    // Cover art (single sequential download)
+    // Cover art
     let cover_path = full_path.join("folder.jpg");
     let cover_url = format!("https://f4.bcbits.com/img/a{:010}_16.jpg", album.art_id);
 
@@ -150,13 +170,7 @@ async fn download_cover(client: &Client, url: &str, path: &Path) -> Result<()> {
 
 fn sanitize_filename(name: &str) -> String {
     name.chars()
-        .map(|c| {
-            if "<>:\"/\\|?*".contains(c) {
-                '_'
-            } else {
-                c
-            }
-        })
+        .map(|c| if "<>:\"/\\|?*".contains(c) { '_' } else { c })
         .collect::<String>()
         .trim()
         .to_string()
