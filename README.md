@@ -15,7 +15,7 @@ bandcamp-archiver --url album_url --destination ./downloads
 Example:
 
 ```bash
-bandcamp-archiver -- --url https://padsbanger.bandcamp.com/album/eleventh-dimension --destination ./downloads
+bandcamp-archiver --url https://padsbanger.bandcamp.com/album/eleventh-dimension --destination ./downloads
 
 ```
 Destination is optional, defaults to current working directory.
