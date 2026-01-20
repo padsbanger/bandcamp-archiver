@@ -21,20 +21,6 @@ async fn main() -> anyhow::Result<()> {
     } else {
         println!("Whole discography");
         handle_discography(url, download_directory).await?;
-        // match scraper.fetch_disography_html() {
-        //     Ok(data) => {
-        //         // TODO: Handle discography JSON data
-        //         dbg!("Data: {}", &data);
-        //         let discogrphy = serde_json::from_str::<Vec<DiscographyItem>>(&data)?;
-
-        //         dbg!("Discography items: {:?}", &discogrphy);
-        //         // downloader::create_and_download_album(data, download_directory).await?;
-        //     }
-        //     Err(e) => {
-        //         return Err(anyhow::anyhow!("Error, no album info found : {}", e));
-        //     }
-        // }
-
     }
 
     Ok(())

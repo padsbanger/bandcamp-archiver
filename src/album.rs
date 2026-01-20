@@ -24,11 +24,11 @@ pub struct Discography {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Album {
-#[serde(rename = "for the curious")]
+    #[serde(rename = "for the curious")]
     pub for_the_curious: Option<String>,
     pub current: CurrentRelease,
     pub artist: String,
-    pub item_type: String,   // "album", "track", etc.
+    pub item_type: String, // "album", "track", etc.
     pub id: i64,
     pub art_id: i64,
     pub album_release_date: String,
@@ -47,7 +47,6 @@ pub struct TrackInfo {
     pub title_link: String,
     pub duration: f64,
 }
-
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CurrentRelease {
