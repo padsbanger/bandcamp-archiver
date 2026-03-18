@@ -46,7 +46,3 @@ Always support the artists you like by buying their music!
 - ~~Download using threads~~
 - ~~Download whole artist discography~~
 - ~~Implement some kind of CLI UI Interface with progress bars~~
-
-#### Nice to have:
-- Better UI, especially for discography downloads, it gets very messy right now with multiple albums downloading at once
-- Error handling
